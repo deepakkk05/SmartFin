@@ -1,0 +1,450 @@
+PS C:\Users\Deepaky\Desktop\Credit Score Prediction\src>
+================================================================================
+SmartFin - Credit Score Prediction System
+================================================================================     
+
+✓ Libraries imported successfully
+
+Loading datasets...
+✓ Training data loaded: (150000, 11)
+✓ Test data loaded: (101503, 11)
+
+Features: ['SeriousDlqin2yrs', 'RevolvingUtilizationOfUnsecuredLines', 'age', 'NumberOfTime30-59DaysPastDueNotWorse', 'DebtRatio', 'MonthlyIncome', 'NumberOfOpenCreditLinesAndLoans', 'NumberOfTimes90DaysLate', 'NumberRealEstateLoansOrLines', 'NumberOfTime60-89DaysPastDueNotWorse', 'NumberOfDependents']
+
+================================================================================     
+Training Data - Exploratory Data Analysis
+================================================================================     
+
+Dataset Shape: (150000, 11)
+
+Column Data Types:
+SeriousDlqin2yrs                          int64
+RevolvingUtilizationOfUnsecuredLines    float64
+age                                       int64
+NumberOfTime30-59DaysPastDueNotWorse      int64
+DebtRatio                               float64
+MonthlyIncome                           float64
+NumberOfOpenCreditLinesAndLoans           int64
+NumberOfTimes90DaysLate                   int64
+NumberRealEstateLoansOrLines              int64
+NumberOfTime60-89DaysPastDueNotWorse      int64
+NumberOfDependents                      float64
+dtype: object
+
+Missing Values:
+                    Missing Count  Percentage
+MonthlyIncome               29731   19.820667
+NumberOfDependents           3924    2.616000
+
+Statistical Summary:
+       SeriousDlqin2yrs  RevolvingUtilizationOfUnsecuredLines            age  NumberOfTime30-59DaysPastDueNotWorse      DebtRatio  MonthlyIncome  NumberOfOpenCreditLinesAndLoans  NumberOfTimes90DaysLate  NumberRealEstateLoansOrLines  NumberOfTime60-89DaysPastDueNotWorse  NumberOfDependents
+count     150000.000000                         150000.000000  150000.000000         
+                150000.000000  150000.000000   1.202690e+05                    150000.000000            150000.000000                 150000.000000                       
+  150000.000000       146076.000000
+mean           0.066840                              6.048438      52.295207         
+                     0.421033     353.005076   6.670221e+03                         8.452760                 0.265973                      1.018240                       
+       0.240387            0.757222
+std            0.249746                            249.755371      14.771866         
+                     4.192781    2037.818523   1.438467e+04                         5.145951                 4.169304                      1.129771                       
+       4.155179            1.115086
+min            0.000000                              0.000000       0.000000         
+                     0.000000       0.000000   0.000000e+00                         0.000000                 0.000000                      0.000000                       
+       0.000000            0.000000
+25%            0.000000                              0.029867      41.000000         
+                     0.000000       0.175074   3.400000e+03                         5.000000                 0.000000                      0.000000                       
+       0.000000            0.000000
+50%            0.000000                              0.154181      52.000000         
+                     0.000000       0.366508   5.400000e+03                         8.000000                 0.000000                      1.000000                       
+       0.000000            0.000000
+75%            0.000000                              0.559046      63.000000         
+                     0.000000       0.868254   8.249000e+03                        11.000000                 0.000000                      2.000000                       
+       0.000000            1.000000
+max            1.000000                          50708.000000     109.000000         
+                    98.000000  329664.000000   3.008750e+06                        58.000000                98.000000                     54.000000                       
+      98.000000           20.000000
+
+Target Distribution:
+SeriousDlqin2yrs
+0    139974
+1     10026
+Name: count, dtype: int64
+
+Class Balance: 6.68% defaulters
+
+================================================================================     
+PREPROCESSING PIPELINE
+================================================================================     
+
+
+Handling missing values...
+  - MonthlyIncome: Filled 0 values with median (5400.00)
+  - NumberOfDependents: Filled with 0
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+Scaling features...
+✓ Features scaled
+
+Training set: (120000, 20)
+Validation set: (30000, 20)
+
+================================================================================     
+MODEL TRAINING
+================================================================================     
+
+Training XGBoost model...
+Parameters: {'objective': 'binary:logistic', 'eval_metric': 'auc', 'max_depth': 6, 'learning_rate': 0.05, 'n_estimators': 300, 'min_child_weight': 5, 'gamma': 0.1, 'subsample': 0.8, 'colsample_bytree': 0.8, 'scale_pos_weight': 10, 'random_state': 42, 'n_jobs': -1, 'tree_method': 'hist'}
+
+[0]     validation_0-auc:0.86071        validation_1-auc:0.85709
+[50]    validation_0-auc:0.87781        validation_1-auc:0.86817
+[100]   validation_0-auc:0.88706        validation_1-auc:0.86836
+[150]   validation_0-auc:0.89630        validation_1-auc:0.86768
+[200]   validation_0-auc:0.90383        validation_1-auc:0.86672
+[250]   validation_0-auc:0.91080        validation_1-auc:0.86579
+[299]   validation_0-auc:0.91739        validation_1-auc:0.86470
+
+✓ Model training completed
+
+Optimizing classification threshold...
+✓ Optimal threshold: 0.700 (F1: 0.4419)
+
+
+================================================================================     
+GENERATING PREDICTIONS
+================================================================================     
+
+
+================================================================================     
+Validation Set - Classification Metrics
+================================================================================     
+
+Accuracy       : 0.9151
+Precision      : 0.3942
+Recall         : 0.5027
+F1 Score       : 0.4419
+AUC-ROC        : 0.8647
+
+Confusion Matrix:
+[[26446  1549]
+ [  997  1008]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+  No Default       0.96      0.94      0.95     27995
+     Default       0.39      0.50      0.44      2005
+
+    accuracy                           0.92     30000
+   macro avg       0.68      0.72      0.70     30000
+weighted avg       0.93      0.92      0.92     30000
+
+
+================================================================================     
+Validation Set - Credit Score Metrics
+================================================================================     
+
+RMSE           : 178.5573
+MAE            : 128.2284
+R² Score       : -0.6900
+
+Generating ROC curve...
+✓ ROC curve saved to roc_curve.png
+
+Generating credit score distribution plot...
+✓ Distribution plot saved to score_distribution.png
+
+================================================================================     
+SHAP EXPLAINABILITY INITIALIZATION
+================================================================================     
+
+Creating SHAP explainer...
+✓ SHAP explainer initialized
+
+Generating global feature importance plot...
+✓ Plot saved to shap_global_importance.png
+
+================================================================================     
+CREDIT SCORE EXPLANATION
+================================================================================     
+
+Credit Score: 834 (Exceptional)
+Default Probability: 2.82%
+
+Top Contributing Factors:
+--------------------------------------------------------------------------------     
+1. RevolvingUtilizationOfUnsecuredLines
+   - SHAP Value: -0.8541
+   - Impact: This feature decreases default risk, affecting credit score positively  
+   - Insight: Credit utilization affects available credit capacity
+
+2. TotalLatePayments
+   - SHAP Value: -0.7438
+   - Impact: This feature decreases default risk, affecting credit score positively  
+   - Insight: Payment history is a critical factor in credit scoring
+
+3. age
+   - SHAP Value: -0.4466
+   - Impact: This feature decreases default risk, affecting credit score positively  
+
+4. CreditLineUtilization
+   - SHAP Value: -0.2910
+   - Impact: This feature decreases default risk, affecting credit score positively  
+   - Insight: Credit utilization affects available credit capacity
+
+5. MonthlyIncome
+   - SHAP Value: -0.1732
+   - Impact: This feature decreases default risk, affecting credit score positively  
+   - Insight: Income level affects ability to repay debts
+
+
+Generating instance explanation plot...
+✓ Plot saved to shap_instance_explanation.png
+
+================================================================================     
+WHAT-IF ANALYSIS
+================================================================================     
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+================================================================================     
+WHAT-IF ANALYSIS REPORT
+================================================================================     
+
+CURRENT SITUATION:
+--------------------------------------------------------------------------------     
+Credit Score: 392
+Default Probability: 83.28%
+Rating: Poor
+
+SIMULATED CHANGES:
+--------------------------------------------------------------------------------     
+  • DebtRatio: Changed to 0.5620874902999999
+
+PROJECTED OUTCOME:
+--------------------------------------------------------------------------------     
+New Credit Score: 413
+New Default Probability: 79.54%
+New Rating: Poor
+
+IMPACT ANALYSIS:
+--------------------------------------------------------------------------------     
+Credit Score Change: +21 points
+Probability Change: -3.73%
+
+✓ Improvement detected! These changes would positively impact your credit score.     
+
+
+================================================================================     
+IMPROVEMENT SUGGESTIONS
+================================================================================     
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Handling missing values...
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+Suggestion 1: Reduce Credit Utilization
+Rationale: Keeping utilization below 30% is considered ideal
+Projected Impact: +78 points
+New Score: 470
+Changes: {'RevolvingUtilizationOfUnsecuredLines': 0.2}
+
+Suggestion 2: Eliminate Late Payments
+Rationale: Payment history is the most important factor in credit scoring
+Projected Impact: +51 points
+New Score: 443
+Changes: {'NumberOfTime30-59DaysPastDueNotWorse': 0}
+
+Suggestion 3: Increase Monthly Income
+Rationale: Higher income improves debt-to-income ratio
+Projected Impact: +29 points
+New Score: 421
+Changes: {'MonthlyIncome': np.float64(10944.0)}
+
+Suggestion 4: Reduce Debt Ratio
+Rationale: Lowering debt burden improves creditworthiness
+Projected Impact: +21 points
+New Score: 413
+Changes: {'DebtRatio': np.float64(0.5620874902999999)}
+
+================================================================================     
+PROCESSING TEST DATA
+================================================================================     
+
+
+Handling missing values...
+  - MonthlyIncome: Filled 0 values with median (5400.00)
+  - NumberOfDependents: Filled with 0
+✓ Missing values handled
+
+Handling outliers...
+✓ Outliers handled
+
+Engineering features...
+✓ Created 10 engineered features
+
+
+================================================================================     
+CREATING FINAL OUTPUT
+================================================================================     
+
+✓ Predictions saved to 'credit_score_predictions.csv'
+
+Sample Predictions:
+   user_id  predicted_credit_score credit_category  default_probability  default_prediction                          top_contributing_features
+0        1                     638            Fair             0.385100              
+     0  RevolvingUtilizationOfUnsecuredLines: 0.7670; ...
+1        2                     728            Good             0.222229              
+     0  TotalLatePayments: -0.5335; age: -0.2436; Numb...
+2        3                     807     Exceptional             0.077679              
+     0  TotalLatePayments: -0.6595; RevolvingUtilizati...
+3        4                     610            Fair             0.436246              
+     0  RevolvingUtilizationOfUnsecuredLines: -0.4645;...
+4        5                     577            Poor             0.496315              
+     0  RevolvingUtilizationOfUnsecuredLines: 0.6341; ...
+5        6                     723            Good             0.230543              
+     0  TotalLatePayments: -0.6232; RevolvingUtilizati...
+6        7                     695            Good             0.281341              
+     0  TotalLatePayments: -0.5036; RevolvingUtilizati...
+7        8                     693            Good             0.286359              
+     0  RevolvingUtilizationOfUnsecuredLines: -0.6433;...
+8        9                     840     Exceptional             0.017338              
+     0  TotalLatePayments: -0.8587; RevolvingUtilizati...
+9       10                     365            Poor             0.881453              
+     1  TotalLatePayments: 1.5213; NumberOfTimes90Days...
+
+================================================================================     
+SUMMARY STATISTICS
+================================================================================     
+
+Total Users Evaluated: 101503
+
+Credit Score Distribution:
+  Mean: 712.33
+  Median: 770.00
+  Std Dev: 135.05
+  Min: 309
+  Max: 847
+
+Category Distribution:
+  Exceptional: 36521 (35.98%)
+  Very Good: 22901 (22.56%)
+  Poor: 17354 (17.10%)
+  Good: 13298 (13.10%)
+  Fair: 11429 (11.26%)
+
+Default Prediction Distribution:
+  No Default: 92748 (91.37%)
+  Default: 8755 (8.63%)
+
+================================================================================     
+PIPELINE COMPLETED SUCCESSFULLY
+================================================================================     
+
+✓ All components are ready for use!
+
+You can now:
+  1. Use model.predict_proba(X) for predictions
+  2. Use shap_explainer.explain_instance(X) for explanations
+  3. Use what_if_analyzer.simulate_changes(X, changes) for what-if analysis
+  4. Access output_df for final predictions
